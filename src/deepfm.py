@@ -1,8 +1,40 @@
 # coding: utf8
+from torch import nn
+import torch
 
-def main():
-    """主入口
+class DeepFM(nn.Module):
+    """深度因子分解网络
     """
+    def __init__(self, num_user_id, num_item_id):
+        """初始化
+        """
+        super(DeepFM, self).__init__()
+        # user_id的Embedding层
+        self.user_id_embedding_layer = nn.Embedding(num_user_id + 1, 128)
+        # item_id的Embedding层
+        self.item_id_embedding_layer = nn.Embedding(num_item_id + 1, 128)
+        # 全连接层
+        self.fc_layer = nn.Sequential(
+                nn.Linear(256, 256),
+                nn.Sigmoid())
+        # 输出层
+        self.output_layer = nn.Sequential(
+                nn.Linear(256, 2),
+                nn.LogSoftmax())
 
-if __name__ == "__main__":
-    main()
+    def forward(self, batch_record):
+        """前向计算
+        Args:
+            batch_record: 
+        """
+        uids = batch_record["uid"]
+        user_id_embedding = self.user_id_embedding_layer(uids)
+
+        iids = batch_record["iid"]
+        item_id_embedding = self.item_id_embedding_layer(iids)
+
+        user_item_feature = torch.cat([user_id_embedding, item_id_embedding], 1)
+        fc = self.fc_layer(user_item_feature)
+        output = self.output_layer(fc)
+
+        return output
