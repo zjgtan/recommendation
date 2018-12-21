@@ -1,6 +1,7 @@
 # coding: utf8
 
 import sys
+sys.path.append("../common/")
 from dataset import ML1MExplicit
 from torch import nn
 import torch
