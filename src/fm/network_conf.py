@@ -2,16 +2,16 @@
 from torch import nn
 import torch
 
-class DeepFM(nn.Module):
+class Net(nn.Module):
     """深度因子分解网络
     """
     def __init__(self, num_user_id, num_item_id):
         """初始化
         """
-        user_emb_size = 10
-        item_emb_size = 10
+        user_emb_size = 100
+        item_emb_size = 100
 
-        super(DeepFM, self).__init__()
+        super(Net, self).__init__()
         # user_id的Embedding层
         self.user_id_embedding_layer = nn.Embedding(num_user_id + 1, user_emb_size)
         self.user_id_basis = nn.Embedding(num_user_id + 1, 1)
@@ -37,8 +37,3 @@ class DeepFM(nn.Module):
         output = output.view(1,-1)
 
         return output
-
-if __name__ == "__main__":
-    record = {"uid": torch.LongTensor([1, 2]), "iid": torch.LongTensor([1, 2])}
-    obj = DeepFM(10, 10)
-    print obj.forward(record)
